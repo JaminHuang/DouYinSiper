@@ -18,7 +18,6 @@ let UserProductCommentList = ({list, listLoading, select }) => {
         {
             title:'赞',
             dataIndex:'digg_count',
-            sorter: (a, b) => a.digg_count.length - b.digg_count.length,
             key:'digg_count'
         },
         {

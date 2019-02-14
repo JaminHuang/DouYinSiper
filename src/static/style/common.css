@@ -1,8 +1,5 @@
+.proinfo { margin-top: 0; }
 .proinfo hr { margin-top: 8px; }
 .proinfo .content { margin-top: 8px; }
 .content p { padding: 8px;overflow:hidden; }
 .red { color: red;}
-.pagination { margin-top: 8px; float: right; margin-left: 16px; }
-.lend { width: 100px; height: 30px; background: #019dd8; float: left; text-align: center; line-height: 30px; font-size: 15px; font-weight: 700; }
-.lend a { color: #FFFFFF; }
-.lend a:hover { color: #000000; }
