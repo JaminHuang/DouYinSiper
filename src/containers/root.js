@@ -5,7 +5,7 @@
  */
 'use strict';
 import Index from './';
-import { UserInfo, UserProduct, UserProductList, UserProductCommentList } from './douyinsiper'
+import { UserInfo, UserProduct, UserProductList, UserProductComment } from './douyinsiper'
 
 export default {
     component: Index,
@@ -29,7 +29,7 @@ export default {
         },
         {
             breadcrumbName:"获取作品评论列表",
-            component: UserProductCommentList,
+            component: UserProductComment,
             path: 'user/product/list'
         }
     ]

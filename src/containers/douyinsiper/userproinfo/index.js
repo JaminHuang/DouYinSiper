@@ -14,7 +14,7 @@ class UserProInfo extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            loading: true,
+            loading: false,
             selectValue: { txtPid:"" },
             item: {user_id:"",aweme_id:"",desc:"",comment_count:"",digg_count:"",share_count:"",is_reviewed:"",share_url:"",video_play_addr:"",music_play_url:"",create_time:""}
         }
@@ -33,20 +33,23 @@ class UserProInfo extends Component {
         this.setState({loading:true});
         Request.FetchGet("api.php?act=GetAwemeInFo&aweme_id="+pid).then(json=>{
             if (json.status_code === 0) {
-                let item = {
-                    user_id:json.aweme_detail.author_user_id,
-                    aweme_id:json.aweme_detail.aweme_id,
-                    desc:json.aweme_detail.desc,
-                    comment_count:json.aweme_detail.statistics.comment_count,
-                    digg_count:json.aweme_detail.statistics.digg_count,
-                    share_count:json.aweme_detail.statistics.share_count,
-                    is_reviewed:json.aweme_detail.status.reviewed,
-                    share_url:json.aweme_detail.share_url,
-                    video_play_addr:json.aweme_detail.video.play_addr.url_list[0],
-                    music_play_url:json.aweme_detail.music.play_url.url_list[0],
-                    create_time:getTime(json.aweme_detail.create_time),
-                };
-                this.setState({item,loading:false});
+                if(json.aweme_detail !== undefined){
+                    let item = {
+                        user_id:json.aweme_detail.author_user_id,
+                        aweme_id:json.aweme_detail.aweme_id,
+                        desc:json.aweme_detail.desc,
+                        comment_count:json.aweme_detail.statistics.comment_count,
+                        digg_count:json.aweme_detail.statistics.digg_count,
+                        share_count:json.aweme_detail.statistics.share_count,
+                        is_reviewed:json.aweme_detail.status.reviewed,
+                        share_url:json.aweme_detail.share_url,
+                        video_play_addr:json.aweme_detail.video.play_addr.url_list[0],
+                        music_play_url:json.aweme_detail.music.play_url.url_list[0],
+                        create_time:getTime(json.aweme_detail.create_time),
+                    };
+                    this.setState({item});
+                }
+                this.setState({loading:false})
             }
             else {
                 message.error(json.status_msg);
@@ -57,7 +60,6 @@ class UserProInfo extends Component {
     }
 
     handleSubmit() {
-        let { formType } = this.state;
         this.props.form.validateFields((errors, values)=> {
             if (!errors) {
                 this.getProductInfo(values.txtPid);
@@ -84,7 +86,7 @@ class UserProInfo extends Component {
                                 initialValue: selectValue && selectValue.txtPid ? selectValue.txtPid : "",
                                 rules: [{ required:true, message:'产品ID不能为空' }]
                             })(
-                                <Input addonBefore={<Icon type="star" />} placeholder="填入抖音产品ID" />
+                                <Input style={{width:300}} addonBefore={<Icon type="star" />} placeholder="填入抖音产品ID" />
                             )
                         }
                     </FormItem>
@@ -94,7 +96,6 @@ class UserProInfo extends Component {
                 </Form>
                 <hr />
                 <Spin tip="数据查询中" spinning={this.state.loading}>
-                    <input type="hidden" id="addr" value="" />
                     <div className="content">
                         <Card title="产品信息">
                             <p>用户ID：{item.user_id}</p>

@@ -2,8 +2,8 @@
 import UserInfo from './userinfo';
 import UserProduct from './userproinfo';
 import UserProductList from './userprolist';
-import UserProductCommentList from './userprocomment';
+import UserProductComment from './userprocomment';
 
 export {
-    UserInfo, UserProduct, UserProductList,UserProductCommentList
+    UserInfo, UserProduct, UserProductList,UserProductComment
 }
