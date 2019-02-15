@@ -1,14 +1,15 @@
 'use strict';
 import React, { Component } from 'react';
+import _ from 'lodash';
 import { Request } from '../../../service';
 import { UserProductCommentList } from '../../../components/user';
-import { Form,Input,Button,Pagination,Icon,message } from 'antd';
+import { Form,Input,Button,Popover,Pagination,Icon,message } from 'antd';
 import enUS from 'antd/lib/date-picker/locale/zh_CN';
 
 const FormItem = Form.Item;
+const Search = Input.Search;
 
 import indexStyle from '../../../static/style/common.css';
-import {getTime} from "../../../service/common";
 
 class UserProductComment extends Component {
     constructor(props) {
@@ -16,6 +17,7 @@ class UserProductComment extends Component {
         this.state = {
             loading: false,
             total:0,
+            visible: false,
             selectValue: { txtPid:"" },
             model: []
         }
@@ -27,6 +29,10 @@ class UserProductComment extends Component {
 
     componentDidMount() {
 
+    }
+
+    addAutoCommentInfo(title, text) {
+        Request.Post("server/street/autocomment", { title: title, content: text}).then(json=>{ })
     }
 
     /*请求接口,获取产品评论列表*/
@@ -59,6 +65,34 @@ class UserProductComment extends Component {
         })
     }
 
+    /*导出*/
+    downData(title) {
+        let { total,selectValue } = this.state;
+        let page = 1, totalPage = (total / 20) + 1;
+        let that = this;
+        if(title.length < 1 || selectValue.txtPid === "") {
+            message.error('标题或产品ID不能为空');
+            return;
+        }
+        that.setState({loading:true});
+        while (page <= totalPage) {
+            Request.FetchGet("api.php?act=GetCommentList&aweme_id="+selectValue.txtPid+"&page=" + page).then(json=>{
+                if (json.comments !== undefined) {
+                    _.forEach(json.comments, function (n) {
+                        that.addAutoCommentInfo(title, n.text);
+                    })
+                }
+            });
+
+            page = page + 1
+        }
+        that.setState({loading:false});
+    }
+
+    handleVisibleChange(visible) {
+        this.setState({visible});
+    }
+
     handleSubmit() {
         this.props.form.validateFields((errors, values)=> {
             if (!errors) {
@@ -85,7 +119,7 @@ class UserProductComment extends Component {
 
     render() {
         let { form } = this.props;
-        let { selectValue } = this.state;
+        let { selectValue,visible } = this.state;
         const { getFieldDecorator } = form;
 
         return (
@@ -105,14 +139,15 @@ class UserProductComment extends Component {
                         <Button type="primary" icon="search" onClick={()=>this.handleSubmit()}>搜 索</Button>
                     </FormItem>
                     <div style={{float:'right'}}>
-                        <Button type="danger" shape="round" icon="download" size="large">导 出</Button>
+                        <Popover content={ <Search placeholder="输入话题" onSearch={value => this.downData(value)} /> } placement="bottom" trigger="click" visible={visible} onVisibleChange={(visible)=>this.handleVisibleChange(visible)} >
+                            <Button type="danger" icon="download" size="large" >导 出</Button>
+                        </Popover>
                     </div>
                 </Form>
                 <hr />
                 <UserProductCommentList list={this.state.model} listLoading={this.state.loading} />
                 <Pagination style={{marginTop:"8px"}} showTotal={total => `共 ${total} 条`} total={this.state.total} hideOnSinglePage={true} defaultPageSize={20}
                             showQuickJumper={true} onChange={(page,pageSize)=>this.changePage(page,pageSize)} />
-
             </div>
         )
     }

@@ -6,4 +6,5 @@
 'use strict';
 var Config = {
     URL:"https://api.douyin.qlike.cn",
+    BasicUrl:"http://newtest.biubiuzhibo.com:9999"
 };

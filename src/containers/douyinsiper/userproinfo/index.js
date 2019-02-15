@@ -1,7 +1,6 @@
 'use strict';
 import React, { Component } from 'react';
-import { Request } from '../../../service';
-import { getTime } from '../../../service/common';
+import { Request, Common } from '../../../service';
 import copy from 'copy-to-clipboard';
 import { Form,Spin,Card,Input,Button,Icon,message } from 'antd';
 import enUS from 'antd/lib/date-picker/locale/zh_CN';
@@ -45,7 +44,7 @@ class UserProInfo extends Component {
                         share_url:json.aweme_detail.share_url,
                         video_play_addr:json.aweme_detail.video.play_addr.url_list[0],
                         music_play_url:json.aweme_detail.music.play_url.url_list[0],
-                        create_time:getTime(json.aweme_detail.create_time),
+                        create_time:Common.getTime(json.aweme_detail.create_time),
                     };
                     this.setState({item});
                 }
